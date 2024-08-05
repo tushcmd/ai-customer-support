@@ -1,10 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { Header } from "@/components/layout/header";
 
 export default function Home() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <Button>I am a Button</Button>
-    </>
+    <div className="flex flex-col h-screen">
+      <Header />
+      <div className="flex-1 grid grid-cols-12 gap-4 p-4 md:p-6">
+        <div className="col-span-12 md:col-span-9 lg:col-span-10">
+          {/* <ChatArea /> */}
+        </div>
+      </div>
+    </div>
   );
 }
