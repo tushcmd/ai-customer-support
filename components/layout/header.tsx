@@ -1,41 +1,40 @@
-// components/Header.jsx
-import Link from "next/link"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { JSX, SVGProps } from "react"
+'use client'
 
-function PowerIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M12 2v10" />
-            <path d="M18.4 6.6a9 9 0 1 1-12.77.04" />
-        </svg>
-    )
-}
+import Logo from "./logo"
+import { useSession } from "next-auth/react";
+
+import { ModalContext } from "../modals/modal-providers";
+import { UserAccountNav } from "./user-account-nav";
+import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
+import { useContext } from "react";
 
 export function Header() {
+    const { setShowSignInModal } = useContext(ModalContext);
+    const { data: session, status } = useSession();
     return (
-        <header className="bg-background border-b px-4 md:px-6 flex items-center h-16 shrink-0">
-            <Link href="/" className="flex items-center gap-2" prefetch={false}>
-                <PowerIcon className="w-6 h-6 text-primary" />
-                <span className="text-lg font-semibold">AI Chat</span>
-            </Link>
-            <div className="ml-auto flex items-center gap-4">
-                <Avatar className="w-8 h-8">
-                    <AvatarImage src="/placeholder-user.jpg" alt="Agent" />
-                    <AvatarFallback>AG</AvatarFallback>
-                </Avatar>
+        <header className="py-4">
+            <div className="layout-container flex justify-between items-center border-b py-1">
+                <Logo />
+                {session ? (
+                    <UserAccountNav />
+                ) : status === "unauthenticated" ?
+                    (
+                        <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => setShowSignInModal(true)}
+                        >
+                            <span>Sign In</span>
+
+                        </Button>
+                    ) : (
+                        <Skeleton className='hidden h-9 w-28 rounded-full lg:flex' />
+                    )
+                }
+
             </div>
         </header>
     )
 }
+
