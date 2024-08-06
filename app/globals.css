@@ -67,3 +67,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .layout-container {
+    @apply container mx-auto max-w-7xl px-5;
+  }
+
+  .page-container {
+    @apply layout-container flex flex-col gap-16 py-20;
+  }
+}

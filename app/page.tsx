@@ -1,14 +1,32 @@
-// import { Header } from "@/components/layout/header";
-import { ChatArea } from "@/components/chat-area";
+
+import { Header } from "@/components/layout/header"
+import { ChatArea } from "@/components/chat-area"
+
 export default function Home() {
   return (
     <div className="flex flex-col h-screen">
-      {/* <Header /> */}
-      <div className="flex-1 grid grid-cols-12 gap-4 p-4 md:p-6">
-        <div className="col-span-12 md:col-span-9 lg:col-span-10">
+      <Header />
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full max-w-4xl mx-auto px-4">
           <ChatArea />
         </div>
-      </div>
+      </main>
     </div>
-  );
+  )
 }
+
+// import { Header } from "@/components/layout/header"
+// import { ChatArea } from "@/components/chat-area"
+
+// export default function Home() {
+//   return (
+//     <div className="flex flex-col h-screen overflow-hidden layout-container">
+//       <Header />
+//       <main className="flex-1 overflow-hidden">
+//         <div className="max-w-4xl mx-auto h-full">
+//           <ChatArea />
+//         </div>
+//       </main>
+//     </div>
+//   )
+// }
