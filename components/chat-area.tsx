@@ -17,6 +17,7 @@ export function ChatArea() {
         { role: 'assistant', content: "Hi! I'm the Headstarter support assistant. How can I help you today?" },
     ])
     const [message, setMessage] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     const scrollToBottom = () => {
@@ -26,23 +27,60 @@ export function ChatArea() {
     useEffect(scrollToBottom, [messages])
 
     const sendMessage = async (): Promise<void> => {
-        if (message.trim()) {
-            setMessages(prevMessages => [
-                ...prevMessages,
-                { role: 'user', content: message.trim() }
-            ])
+        if (message.trim() && !isLoading) {
+            setIsLoading(true)
+            const newMessages: Message[] = [...messages, { role: 'user', content: message.trim() }]
+            setMessages(newMessages)
             setMessage('')
-            // Simulate assistant response
-            setTimeout(() => {
-                setMessages(prevMessages => [
-                    ...prevMessages,
-                    { role: 'assistant', content: "Thank you for your message. How else can I assist you?" }
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ messages: newMessages }),
+                })
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch response')
+                }
+
+                const reader = response.body?.getReader()
+                if (!reader) {
+                    throw new Error('Failed to get reader')
+                }
+
+                let assistantMessage = ''
+                setMessages(prev => [...prev, { role: 'assistant', content: '' }])
+
+                while (true) {
+                    const { done, value } = await reader.read()
+                    if (done) {
+                        break
+                    }
+
+                    const text = new TextDecoder().decode(value)
+                    assistantMessage += text
+
+                    setMessages(prev => [
+                        ...prev.slice(0, -1),
+                        { role: 'assistant', content: assistantMessage }
+                    ])
+                }
+            } catch (error) {
+                console.error('Error:', error)
+                setMessages(prev => [
+                    ...prev,
+                    { role: 'assistant', content: "I'm sorry, I encountered an error. Please try again." }
                 ])
-            }, 1000)
+            } finally {
+                setIsLoading(false)
+            }
         }
     }
 
-    const handleKeyPress = (event: { key: string; shiftKey: any; preventDefault: () => void }) => {
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault()
             sendMessage()
@@ -51,7 +89,7 @@ export function ChatArea() {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                 {messages.map((msg, index) => (
                     <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                         {msg.role === 'assistant' && (
@@ -74,7 +112,7 @@ export function ChatArea() {
                 ))}
                 <div ref={messagesEndRef} />
             </div>
-            <div className="border-t p-4 bg-background mb-16">
+            <div className="border-t p-4 bg-background">
                 <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
                     <Input
                         type="text"
@@ -82,9 +120,12 @@ export function ChatArea() {
                         className="flex-1"
                         value={message}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
+                        disabled={isLoading}
                         onKeyPress={handleKeyPress}
                     />
-                    <Button type="submit">Send</Button>
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? 'Sending...' : 'Send'}
+                    </Button>
                 </form>
             </div>
         </div>
