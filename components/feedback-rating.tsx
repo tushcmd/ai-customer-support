@@ -7,34 +7,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { SmilePlus, Smile, Frown, BadgeMinus } from "lucide-react"
 
 interface FeedbackRatingProps {
-    userId: string
+    onSubmit: (rating: number, feedback: string) => void
     onClose: () => void
 }
 
-export function FeedbackRating({ userId, onClose }: FeedbackRatingProps) {
+export function FeedbackRating({ onSubmit, onClose }: FeedbackRatingProps) {
     const [rating, setRating] = useState<number | null>(null)
     const [feedback, setFeedback] = useState("")
 
-    const submitFeedback = async () => {
+    const handleSubmit = () => {
         if (rating === null) return
-
-        try {
-            const response = await fetch('/api/feedback', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId, rating, feedback }),
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to submit feedback')
-            }
-
-            onClose()
-        } catch (error) {
-            console.error('Error submitting feedback:', error)
-        }
+        onSubmit(rating, feedback)
     }
 
     return (
@@ -67,7 +50,7 @@ export function FeedbackRating({ userId, onClose }: FeedbackRatingProps) {
                 />
                 <div className="flex justify-end gap-2">
                     <Button variant="outline" onClick={onClose}>Cancel</Button>
-                    <Button onClick={submitFeedback} disabled={rating === null}>Submit</Button>
+                    <Button onClick={handleSubmit} disabled={rating === null}>Submit</Button>
                 </div>
             </div>
         </div>

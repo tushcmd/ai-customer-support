@@ -1,9 +1,15 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { MessageSquare } from 'lucide-react'
+import { FeedbackRating } from './feedback-rating'
+import { useSession } from "next-auth/react"
+import { ModalContext } from './modals/modal-providers'
+import { useToast } from "@/components/ui/use-toast"
+
 
 type MessageRole = 'assistant' | 'user'
 
@@ -19,6 +25,11 @@ export function ChatArea() {
     const [message, setMessage] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+
+    const { data: session } = useSession()
+    const [showFeedback, setShowFeedback] = useState(false)
+    const { setShowSignInModal } = useContext(ModalContext)
+    const { toast } = useToast()
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -87,6 +98,45 @@ export function ChatArea() {
         }
     }
 
+    const handleFeedbackClick = () => {
+        setShowFeedback(true)
+    }
+
+    const handleFeedbackSubmit = async (rating: number, feedback: string) => {
+        if (!session) {
+            setShowSignInModal(true)
+            return
+        }
+
+        try {
+            const response = await fetch('/api/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rating, feedback }),
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to submit feedback')
+            }
+
+            toast({
+                title: "Feedback Submitted",
+                description: "Thank you for your feedback!",
+            })
+
+            setShowFeedback(false)
+        } catch (error) {
+            console.error('Error submitting feedback:', error)
+            toast({
+                title: "Error",
+                description: "Failed to submit feedback. Please try again.",
+                variant: "destructive",
+            })
+        }
+    }
+
     return (
         <div className="flex flex-col h-full">
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
@@ -113,7 +163,7 @@ export function ChatArea() {
                 <div ref={messagesEndRef} />
             </div>
             <div className="border-t p-4 bg-background">
-                <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
+                <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-2 items-center">
                     <Input
                         type="text"
                         placeholder="Type your message..."
@@ -126,8 +176,20 @@ export function ChatArea() {
                     <Button type="submit" disabled={isLoading}>
                         {isLoading ? 'Sending...' : 'Send'}
                     </Button>
+                    <Button
+                        type="button"
+                        //variant="ghost"
+                        size="icon"
+                        onClick={handleFeedbackClick}
+                        title="Provide feedback"
+                    >
+                        <MessageSquare className="h-4 w-4" />
+                    </Button>
                 </form>
             </div>
+            {showFeedback && (
+                <FeedbackRating onSubmit={handleFeedbackSubmit} onClose={() => setShowFeedback(false)} />
+            )}
         </div>
     )
 }
