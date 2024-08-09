@@ -63,7 +63,7 @@ export function UserAccountNav() {
             </div>
 
             <ul role="list" className="mb-14 mt-1 w-full text-muted-foreground">
-              {user.role === "ADMIN" ? (
+              {/* {user.role === "ADMIN" ? (
                 <li className="rounded-lg text-foreground hover:bg-muted">
                   <Link
                     href="/admin"
@@ -96,7 +96,7 @@ export function UserAccountNav() {
                   <Settings className="size-4" />
                   <p className="text-sm">Settings</p>
                 </Link>
-              </li>
+              </li> */}
 
               <li
                 className="rounded-lg text-foreground hover:bg-muted"
