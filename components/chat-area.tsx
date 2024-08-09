@@ -9,6 +9,7 @@ import { FeedbackRating } from './feedback-rating'
 import { useSession } from "next-auth/react"
 import { ModalContext } from './modals/modal-providers'
 import { useToast } from "@/components/ui/use-toast"
+import { useLocalStorage } from 'usehooks-ts'
 
 
 type MessageRole = 'assistant' | 'user'
@@ -19,9 +20,10 @@ interface Message {
 }
 
 export function ChatArea() {
-    const [messages, setMessages] = useState<Message[]>([
-        { role: 'assistant', content: "Hi! I'm the Headstarter support assistant. How can I help you today?" },
-    ])
+    // const [messages, setMessages] = useState<Message[]>([
+    //     { role: 'assistant', content: "Hi! I'm the Headstarter support assistant. How can I help you today?" },
+    // ])
+
     const [message, setMessage] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -30,6 +32,15 @@ export function ChatArea() {
     const [showFeedback, setShowFeedback] = useState(false)
     const { setShowSignInModal } = useContext(ModalContext)
     const { toast } = useToast()
+
+
+    const userEmail = session?.user?.email || 'anonymous'
+
+
+    const [messages, setMessages, removeMessages] = useLocalStorage<Message[]>(
+        `chat_messages_${userEmail}`,
+        [{ role: 'assistant', content: "Hi! I'm the Headstarter support assistant. How can I help you today?" }]
+    )
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
