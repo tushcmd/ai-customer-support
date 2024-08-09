@@ -67,6 +67,8 @@ model User {
     stripePriceId          String?   @map(name: "stripe_price_id")
     stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
 
+    feedback Feedback[]
+
     @@map(name: "users")
 }
 
@@ -77,4 +79,13 @@ model VerificationToken {
 
     @@unique([identifier, token])
     @@map(name: "verification_tokens")
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  rating    Int
+  feedback  String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
