@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI Customer Chat Bot
+
+## Project Overview
+
+This is an AI-powered customer support chatbot using Next.js and the OpenAI API.
+
+## Technologies
+
+- Next.js - React Framework
+- Shadcn UI - Components
+- Next-auth - Authentication
+- Prisma - ORM
+- PostgreSQL - Database
+- Neon - Database Hosting
+- OpenAI - LLM(genAI)
+- TailwindCSS - Styling
+
+<!-- ## Screenshots
+
+![Main Page](public/_screenshots/pantry_mainpage.png)
+
+![Add Item Dialog](public/_screenshots/pantry_add_item.png)
+
+![Expiring](public/_screenshots/pantry_expiring.png)
+
+![Edit Item Dialog](public/_screenshots/pantry_edit_item.png) -->
+
+## Features
+
+- Chatbot interface
+- Respond to the user intelligently using any Gen-AI model
+- Authentication for personalised chat experience
+- Feedback implementation to rate chatbot's responses
+
+## Features to Add
+
+- AWS Bedrock responses
+- Multi-language support for a diverse culture base
+- Implement RAG so the chatbot responds based on a given knowledge base
+- Create an LLM orchestration pattern with a router and task specific models
 
 ## Getting Started
 
-First, run the development server:
+1.Clone the repository:
+
+```bash
+git clone https://github.com/tushcmd/ai-customer-support.git
+```
+
+2.Install dependencies:
+
+```bash
+cd ai-customer-support
+npm install
+```
+
+3.Set up environment variables:
+
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file with all the necessary environment variables.
+
+4.Run prisma commands to setup
+
+```bash
+npx prisma generate
+
+# then
+
+npx prisma migrate dev
+
+# then
+
+npx db push
+```
+
+5.Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Contributions are welcome! Please feel free to open issues or submit pull requests.
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+MIT License
