@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useContext } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { MessageSquare } from 'lucide-react'
+import { MessageSquare, Trash } from 'lucide-react'
 import { FeedbackRating } from './feedback-rating'
 import { useSession } from "next-auth/react"
 import { ModalContext } from './modals/modal-providers'
@@ -148,6 +148,11 @@ export function ChatArea() {
         }
     }
 
+    const clearChatHistory = () => {
+        removeMessages()
+        // setMessages([{ role: 'assistant', content: "Hi! I'm the Headstarter support assistant. How can I help you today?" }])
+    }
+
     return (
         <div className="flex flex-col h-full">
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
@@ -175,6 +180,15 @@ export function ChatArea() {
             </div>
             <div className="border-t p-4 bg-background">
                 <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-2 items-center">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={clearChatHistory}
+                        title="Clear chat"
+                    >
+                        <Trash className="h-4 w-4" />
+                    </Button>
                     <Input
                         type="text"
                         placeholder="Type your message..."
