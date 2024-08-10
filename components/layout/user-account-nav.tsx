@@ -62,7 +62,7 @@ export function UserAccountNav() {
               </div>
             </div>
 
-            <ul role="list" className="mb-14 mt-1 w-full text-muted-foreground">
+            <div role="list" className="mb-14 mt-1 w-full text-muted-foreground">
               {/* {user.role === "ADMIN" ? (
                 <li className="rounded-lg text-foreground hover:bg-muted">
                   <Link
@@ -98,7 +98,7 @@ export function UserAccountNav() {
                 </Link>
               </li> */}
 
-              <li
+              <div
                 className="rounded-lg text-foreground hover:bg-muted"
                 onClick={(event) => {
                   event.preventDefault();
@@ -111,8 +111,8 @@ export function UserAccountNav() {
                   <LogOut className="size-4" />
                   <p className="text-sm">Log out </p>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </div>
           </Drawer.Content>
           <Drawer.Overlay />
         </Drawer.Portal>
