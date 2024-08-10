@@ -165,7 +165,7 @@ export function ChatArea() {
                         </div>
                         {msg.role === 'user' && (
                             <Avatar className="w-8 h-8 flex-shrink-0">
-                                <AvatarImage src="/placeholder-user.jpg" alt="User" />
+                                <AvatarImage src="/_static/user.png" alt="User" />
                                 <AvatarFallback>US</AvatarFallback>
                             </Avatar>
                         )}
